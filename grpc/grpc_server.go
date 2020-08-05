@@ -4,12 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
-	"net"
-	"os"
-	"runtime"
-	"runtime/debug"
-
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -18,13 +12,16 @@ import (
 	"github.com/zhuxuyang/grpc_example/protos"
 	"github.com/zhuxuyang/grpc_example/service"
 	"google.golang.org/grpc"
+	"log"
+	"net"
+	"os"
+	"runtime"
 )
 
 var grpc_log_file = "./grpc.log"
 
 func getRecoverOption() grpc_recovery.Option {
 	return grpc_recovery.WithRecoveryHandler(func(p interface{}) (err error) {
-		debug.PrintStack()
 		buf := make([]byte, 1<<16)
 		stackSize := runtime.Stack(buf, true)
 		start := bytes.Index(buf, []byte("/src/runtime/panic.go"))
@@ -35,7 +32,7 @@ func getRecoverOption() grpc_recovery.Option {
 			buf = buf[0:stackSize]
 		}
 
-		log.Println("grpc panic \n", string(buf))
+		log.Println("grpc panic \n", p, string(buf))
 		return nil
 	})
 }
