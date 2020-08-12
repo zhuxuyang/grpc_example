@@ -11,7 +11,7 @@ func main() {
 	log.Println("service_example start...")
 	config.InitConfig()
 	resource.InitLogger()
-	resource.InitDB()
+	//resource.InitDB()
 
 	grpc.RegisterGRPCService()
 

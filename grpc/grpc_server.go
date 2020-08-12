@@ -15,7 +15,9 @@ import (
 	"log"
 	"net"
 	"os"
+	"path"
 	"runtime"
+	"strings"
 )
 
 var grpc_log_file = "./grpc.log"
@@ -41,16 +43,17 @@ func RegisterGRPCService() {
 	gRPCLogDecider := func(ctx context.Context, fullMethodName string, servingObject interface{}) bool {
 		return true
 	}
-
 	logger := logrus.New()
-
-	logger.SetFormatter(&logrus.JSONFormatter{})
-	logFile, err := os.OpenFile(grpc_log_file, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0755)
+	fileName := path.Join(viper.GetString("logDir"), "rpc-course.log")
+	// Create a LogFile
+	logFile, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0755)
 	if err != nil {
 		log.Printf("create logfile if failed, err is %v", err)
 	}
+	logger.SetFormatter(&MyGrpcLogFormat{})
 	logger.Out = logFile
 	logrusEntry := logrus.NewEntry(logger)
+
 	logOpts := []grpc_logrus.Option{
 		grpc_logrus.WithLevels(grpc_logrus.DefaultCodeToLevel),
 	}
@@ -84,4 +87,16 @@ func RegisterGRPCService() {
 	}()
 
 	log.Println("GRPC注册成功 port:", viper.GetString("grpc_port"))
+}
+
+type MyGrpcLogFormat struct{}
+
+func (f *MyGrpcLogFormat) Format(entry *logrus.Entry) ([]byte, error) {
+	b := &bytes.Buffer{}
+	b.WriteString(entry.Time.Format("[2006-01-02 15:04:05] "))
+	b.WriteString(fmt.Sprintf("[%v] ", strings.ToUpper(entry.Level.String())))
+	b.WriteString(fmt.Sprintf("[%v ", entry.Data))
+	b.WriteByte('\n')
+
+	return b.Bytes(), nil
 }

@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/zhuxuyang/grpc_example/model"
-	"github.com/zhuxuyang/grpc_example/resource"
 	"google.golang.org/grpc/metadata"
 	"time"
 
@@ -15,15 +13,15 @@ type Example struct {
 }
 
 func (s *Example) Hello(ctx context.Context, req *protos.HelloRequest) (resp *protos.HelloResponse, err error) {
-	id := GetRequestIdFromContext(ctx)
-	resource.Logger.Info("id=?", id)
-	m := model.UserA{}
-	err = resource.Db.
-		Model(&model.UserA{}).Where("1=1").
-		Scan(&m).Error
-	//resource.Logger.Info("query: err ", err)
-	id = GetRequestIdFromContext(ctx)
-	resource.Logger.Info("id=?", id)
+	//id := GetRequestIdFromContext(ctx)
+	//resource.Logger.Info("id=?", id)
+	//m := model.UserA{}
+	//err = resource.Db.
+	//	Model(&model.UserA{}).Where("1=1").
+	//	Scan(&m).Error
+	////resource.Logger.Info("query: err ", err)
+	//id = GetRequestIdFromContext(ctx)
+	//resource.Logger.Info("id=?", id)
 
 	return &protos.HelloResponse{
 		Answer: viper.GetString("name"),
