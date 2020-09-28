@@ -1,10 +1,16 @@
-name: xuyang
-
-grpc_port: 13831
-
+service: xuyang
+env: online
+healthPort: 8080
+port: 13831
 database:
   host: 127.0.0.1
   port: 30001
   user: root
   password: 123456
   name: hx
+
+
+golang-consul:
+  token: 11
+  host: consul
+  port: 8500

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"google.golang.org/grpc/metadata"
+	"log"
 	"time"
 
 	"github.com/spf13/viper"
@@ -22,7 +23,7 @@ func (s *Example) Hello(ctx context.Context, req *protos.HelloRequest) (resp *pr
 	////resource.Logger.Info("query: err ", err)
 	//id = GetRequestIdFromContext(ctx)
 	//resource.Logger.Info("id=?", id)
-
+	log.Println(req.Time)
 	return &protos.HelloResponse{
 		Answer: viper.GetString("name"),
 		Time:   time.Now().Unix(),
