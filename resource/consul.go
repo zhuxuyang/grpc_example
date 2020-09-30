@@ -92,7 +92,7 @@ func RegisterConsulService() {
 		log.Panic(fmt.Sprintf("RegisterConsulService err %v  %v", consulResource, err))
 	}
 
-	ServerGRPCPortString := viper.GetString("port")
+	ServerGRPCPortString := viper.GetString("grpc_port")
 	ServerGRPCPortInt, err := strconv.ParseInt(ServerGRPCPortString, 10, 64)
 	if err != nil {
 		log.Panic("port config in yaml should be integer instead of" + ServerGRPCPortString)
@@ -105,13 +105,12 @@ func RegisterConsulService() {
 	//register consul
 	agent := CR.consulClient.Agent()
 	interval := time.Duration(3) * time.Second
-	deregister := time.Duration(1) * time.Second
+	deregister := time.Duration(1000000) * time.Second
 	reg := &api.AgentServiceRegistration{
-		ID:      CR.serverID,                     // 服务节点的名称
-		Name:    viper.GetString("service"),      // 服务名称
-		Tags:    []string{"go", "advertisement"}, // tag，可以为空
-		Port:    int(ServerGRPCPortInt),          // 服务端口
-		Address: CR.serverIP,                     // 服务 IP
+		ID:      CR.serverID,                // 服务节点的名称
+		Name:    viper.GetString("service"), // 服务名称
+		Port:    int(ServerGRPCPortInt),     // 服务端口
+		Address: CR.serverIP,                // 服务 IP
 		Check: &api.AgentServiceCheck{ // 健康检查
 			Interval:                       interval.String(), // 健康检查间隔
 			HTTP:                           fmt.Sprintf("http://%s:%s/health", CR.serverIP, HealthyPortHTTP),

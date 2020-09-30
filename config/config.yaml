@@ -1,7 +1,7 @@
 service: xuyang
 env: online
 healthPort: 8080
-port: 13831
+grpc_port: 13831
 database:
   host: 127.0.0.1
   port: 30001
@@ -12,5 +12,6 @@ database:
 
 golang-consul:
   token: 11
-  host: consul
+  host: 127.0.0.1
   port: 8500
+
