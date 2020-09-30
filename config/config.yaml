@@ -12,6 +12,6 @@ database:
 
 golang-consul:
   token: 11
-  host: 127.0.0.1
+  host: consul
   port: 8500
 
